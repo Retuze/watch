@@ -146,8 +146,8 @@ void SystemClock_Config(void)
 
   }
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
-  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
-  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_4);
+  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_2);
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
 
    /* Wait till System clock is ready */
@@ -155,8 +155,8 @@ void SystemClock_Config(void)
   {
 
   }
-  LL_Init1msTick(72000000);
-  LL_SetSystemCoreClock(72000000);
+  LL_Init1msTick(128000000);
+  LL_SetSystemCoreClock(128000000);
 }
 
 /* USER CODE BEGIN 4 */
