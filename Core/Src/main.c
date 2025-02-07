@@ -113,6 +113,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    LL_GPIO_SetOutputPin(GPIOC,LL_GPIO_PIN_13);
+    LL_mDelay(500);
+    LL_GPIO_ResetOutputPin(GPIOC,LL_GPIO_PIN_13);
+    LL_mDelay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
