@@ -86,7 +86,7 @@ int main(void)
 
   /** NOJTAG: JTAG-DP Disabled and SW-DP Enabled
   */
-  LL_GPIO_AF_Remap_SWJ_NOJTAG();
+  LL_GPIO_AF_EnableRemap_SWJ();
 
   /* USER CODE BEGIN Init */
 
