@@ -84,7 +84,7 @@ int main(void)
   /* SysTick_IRQn interrupt configuration */
   NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),7, 0));
 
-  /** NOJTAG: JTAG-DP Disabled and SW-DP Enabled
+  /** ENABLE: Full SWJ (JTAG-DP + SW-DP): Reset State
   */
   LL_GPIO_AF_EnableRemap_SWJ();
 

@@ -211,8 +211,6 @@ void DMA1_Channel3_IRQHandler(void)
   /* USER CODE END DMA1_Channel3_IRQn 1 */
 }
 
-
-
 /**
   * @brief This function handles DMA1 channel7 global interrupt.
   */
@@ -225,7 +223,6 @@ void DMA1_Channel7_IRQHandler(void)
 
   /* USER CODE END DMA1_Channel7_IRQn 1 */
 }
-
 
 /* USER CODE BEGIN 1 */
 
