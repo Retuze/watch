@@ -71,30 +71,45 @@ void serial_init(int baudrate) {
 static uint16_t serial_send_len = 0;
 
 void serial_send(uint8_t *data, uint16_t length) {
-    // 尝试将数据写入FIFO
-    uint16_t available = fifo_write_available(&g_serial.tx_fifo);
-    if(available < length) {
-        return ;  // FIFO空间不足
-    }
-    fifo_write(&g_serial.tx_fifo, data, length);
-    // 如果DMA没有在发送，立即启动发送
-    if(!LL_DMA_IsEnabledChannel(DMA1, LL_DMA_CHANNEL_4)) {
-        uint16_t send_len =  fifo_read_available(&g_serial.tx_fifo);
-        // 计算读取位置
-        uint16_t read_pos = g_serial.tx_fifo.out & (TX_BUFFER_SIZE - 1);
-        // 计算到缓冲区末尾的剩余空间
-        uint16_t to_end = fifo_min(send_len, TX_BUFFER_SIZE - read_pos);
-        // 如果数据跨越了缓冲区末尾，先只发送到末尾的部分
-        if(send_len > to_end) {
-            send_len = to_end;
+    uint16_t bytes_written = 0;
+    uint32_t timeout;
+    
+    while (bytes_written < length) {
+        timeout = 100000000;  // 设置适当的超时值
+        while (fifo_write_available(&g_serial.tx_fifo) == 0) {
+            if (--timeout == 0) {
+                // 超时处理，可以返回错误码
+                return;
+            }
+            __NOP();
         }
-        serial_send_len = send_len;
-        // 配置DMA传输
-        LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_4, (uint32_t)&g_serial.tx_buffer[read_pos]);
-        LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_4, send_len);
-        LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_4);
+        
+        uint16_t available = fifo_write_available(&g_serial.tx_fifo);
+        // 计算这次可以写入的数据量
+        uint16_t to_write = fifo_min(available, length - bytes_written);
+        // 写入数据
+        fifo_write(&g_serial.tx_fifo, data + bytes_written, to_write);
+        bytes_written += to_write;
+        
+        // 如果DMA没有在发送，立即启动发送
+        if(!LL_DMA_IsEnabledChannel(DMA1, LL_DMA_CHANNEL_4)) {
+            uint16_t send_len = fifo_read_available(&g_serial.tx_fifo);
+            // 计算读取位置
+            uint16_t read_pos = g_serial.tx_fifo.out & (TX_BUFFER_SIZE - 1);
+            // 计算到缓冲区末尾的剩余空间
+            uint16_t to_end = fifo_min(send_len, TX_BUFFER_SIZE - read_pos);
+            // 如果数据跨越了缓冲区末尾，先只发送到末尾的部分
+            if(send_len > to_end) {
+                send_len = to_end;
+            }
+            serial_send_len = send_len;
+            // 配置DMA传输
+            LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_4, (uint32_t)&g_serial.tx_buffer[read_pos]);
+            LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_4, send_len);
+            LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_4);
+        }
     }
-    return ;
+    return;
 }
 
 /**
