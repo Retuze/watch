@@ -1,3 +1,4 @@
 {
-    "cmake.copyCompileCommands": "${workspaceFolder}/build/compile_commands.json"
+    "cmake.copyCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "clangd.arguments": ["--query-driver=C:\\tool\\arm_none_eabi_gcc\\bin\\arm-none-eabi-g*"]
 }

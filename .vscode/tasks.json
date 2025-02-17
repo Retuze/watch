@@ -16,6 +16,22 @@
             },
 
             "problemMatcher": []
-        }
+        },
+        {
+            "label": "OpenOCD 调试烧录任务",
+            "type": "shell",
+            "command": "openocd",
+            "args": [
+                "-f", "interface/cmsis-dap.cfg",
+                "-f", "target/stm32f1x.cfg",
+                "-c", "program ./build/Debug/watch.elf verify reset exit"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+
+            "problemMatcher": []
+        },
     ]
 } 

@@ -88,21 +88,37 @@
 #define PE14 78
 #define PE15 79
 
+#define HIGH 1
+#define LOW 0
+
+// 模拟输入
+#define ANALOG 0
+// 浮空输入
+#define FLOATING 1
+// 上拉输入
+#define INPUT_PULLUP 2
+// 下拉输入
+#define INPUT_PULLDOWN 3
+// 推挽输出
+#define OUTPUT_PUSH_PULL 4
+// 开漏输出
+#define OUTPUT_OPEN_DRAIN 5
+// 复用功能
+#define ALTERNATE 6
 
 #ifdef __cplusplus
 
-extern "C" {
+extern "C"
+{
 #endif
 
-void pin_mode(uint16_t pin, uint8_t mode);
-void pin_write(uint16_t pin, uint8_t value);
-void pin_toggle(uint16_t pin);
-uint8_t pin_read(uint16_t pin);
+    void pin_mode(uint16_t pin, uint8_t mode);
+    void pin_write(uint16_t pin, uint8_t value);
+    void pin_toggle(uint16_t pin);
+    uint8_t pin_read(uint16_t pin);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-
-

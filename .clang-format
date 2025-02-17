@@ -1,0 +1,18 @@
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# https://www.bbsmax.com/A/VGzlMjexJb/
+ 
+# 语言: None, Cpp, Java, JavaScript, ObjC, Proto, TableGen, TextProto
+Language: Cpp
+ 
+BasedOnStyle: Google
+
+# 缩进
+IndentWidth: 4
+
+# 行宽
+ColumnLimit: 120
+
+# 函数声明与定义之间的空行
+SpaceBeforeParens: false
+
+

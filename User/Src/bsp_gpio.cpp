@@ -63,7 +63,34 @@ static uint32_t GetGPIOPin(uint16_t pin)
 
 void pin_mode(uint16_t pin, uint8_t mode)
 {
-    LL_GPIO_SetPinMode(GetGPIOx(pin), GetGPIOPin(pin), mode);
+    switch (mode)
+    {
+    case ANALOG:
+        LL_GPIO_SetPinMode(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_MODE_ANALOG);
+        break;
+    case FLOATING:
+        LL_GPIO_SetPinMode(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_MODE_FLOATING);
+        break;
+    case INPUT_PULLUP:
+        LL_GPIO_SetPinMode(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_MODE_INPUT);
+        LL_GPIO_SetPinPull(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_PULL_UP);
+        break;
+    case INPUT_PULLDOWN:
+        LL_GPIO_SetPinMode(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_MODE_INPUT);
+        LL_GPIO_SetPinPull(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_PULL_DOWN);
+        break;
+    case OUTPUT_PUSH_PULL:
+        LL_GPIO_SetPinMode(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_MODE_OUTPUT);
+        LL_GPIO_SetPinOutputType(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_OUTPUT_PUSHPULL);
+        break;
+    case OUTPUT_OPEN_DRAIN:
+        LL_GPIO_SetPinMode(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_MODE_OUTPUT);
+        LL_GPIO_SetPinOutputType(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_OUTPUT_OPENDRAIN);
+        break;
+    case ALTERNATE:
+        LL_GPIO_SetPinMode(GetGPIOx(pin), GetGPIOPin(pin), LL_GPIO_MODE_ALTERNATE);
+        break;
+    }
 }
 
 void pin_write(uint16_t pin, uint8_t value)
