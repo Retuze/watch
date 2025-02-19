@@ -6,36 +6,66 @@ add_library(UserModule INTERFACE)
 # 启用 C++、C 与 ASM 语言支持
 enable_language(CXX C ASM)
 
-# 添加用户模块需要的编译选项或宏定义（可以根据需要修改或添加）
-target_compile_definitions(UserModule INTERFACE
-    USER_FEATURE
-    $<$<CONFIG:Debug>:DEBUG>
+# 配置参数（支持多个目录和文件）
+set(SOURCE_DIRS "Inc" "Src" "./")       # 支持多个源文件目录
+set(EXCLUDE_DIRS "doc" "build" ".vscode" ".cache" ".git" ".idea" "out")  # 支持多个排除目录
+set(EXCLUDE_FILES ) # 支持多个排除文件
+
+# 递归查找所有源文件
+file(GLOB_RECURSE SOURCES
+    LIST_DIRECTORIES false
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+    ${SOURCE_DIRS}/*.[cC]   # C文件
+    ${SOURCE_DIRS}/*.cpp    # C++文件
+    ${SOURCE_DIRS}/*.cxx    # C++文件
+    ${SOURCE_DIRS}/*.[sS]      # 汇编文件
 )
+ 
+# 合并排除处理（支持多参数）
+# 生成排除正则表达式模式（修复build目录排除问题）
+set(EXCLUDE_PATTERNS)
+foreach(excl_dir ${EXCLUDE_DIRS})
+    list(APPEND EXCLUDE_PATTERNS "^${excl_dir}/.*")  # 匹配以目录名开头的路径
+endforeach()
+foreach(excl_file ${EXCLUDE_FILES})
+    list(APPEND EXCLUDE_PATTERNS "/${excl_file}$")   # 匹配任意路径下的指定文件名
+endforeach()
+
+# 合并所有排除模式
+if(EXCLUDE_PATTERNS)
+    list(JOIN EXCLUDE_PATTERNS "|" EXCLUDE_REGEX)
+    list(FILTER SOURCES EXCLUDE REGEX "${EXCLUDE_REGEX}")
+endif()
+
+# 自动收集头文件目录（改为基于头文件路径）
+file(GLOB_RECURSE HEADERS
+    LIST_DIRECTORIES false
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+    ${SOURCE_DIRS}/*.h
+    ${SOURCE_DIRS}/*.hpp
+    ${SOURCE_DIRS}/*.hxx
+    ${SOURCE_DIRS}/*.inc
+)
+foreach(_header ${HEADERS})
+    get_filename_component(_dir ${_header} DIRECTORY)
+    list(APPEND _include_dirs ${CMAKE_CURRENT_SOURCE_DIR}/${_dir})
+endforeach()
+list(REMOVE_DUPLICATES _include_dirs)
 
 # 设置用户模块的头文件搜索路径（假设用户自己的头文件在 Inc 目录下）
 target_include_directories(UserModule INTERFACE
-    ${CMAKE_CURRENT_SOURCE_DIR}/Inc
+    ${_include_dirs}
 )
-
-# 自动搜索当前目录 Src 下及其所有子目录中的 .cpp, .c 以及汇编(.s和.S) 文件
-file(GLOB_RECURSE USER_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp")
-file(GLOB_RECURSE USER_C_FILES   "${CMAKE_CURRENT_SOURCE_DIR}/Src/*.c")
-file(GLOB_RECURSE USER_ASM_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Src/*.s" "${CMAKE_CURRENT_SOURCE_DIR}/Src/*.S")
 
 # 把搜索到的文件添加到 UserModule 目标
 target_sources(UserModule
     INTERFACE
-    ${USER_CPP_FILES}
-    ${USER_C_FILES}
-    ${USER_ASM_FILES}
+    ${SOURCES}
+    ${HEADERS}
 )
 
-# 如有需要，可在此设置链接目录
-target_link_directories(UserModule INTERFACE
-    # 例如 ${CMAKE_CURRENT_SOURCE_DIR}/libs
-)
-
-# 确保使用的 C++ 标准满足要求
-if(CMAKE_CXX_STANDARD LESS 11)
-    message(ERROR "User module requires C++11 or higher")
-endif() 
+message(STATUS "======================================")
+message(STATUS "Discovered source files: ${SOURCES}")
+message(STATUS "Discovered headers: ${HEADERS}")
+message(STATUS "Include directories: ${_include_dirs}")
+message(STATUS "======================================")
