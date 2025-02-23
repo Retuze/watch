@@ -21,7 +21,6 @@
 #include "dma.h"
 #include "i2c.h"
 #include "spi.h"
-#include "stm32f1xx_ll_cortex.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -138,7 +137,7 @@ void SystemClock_Config(void)
   {
 
   }
-  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE_DIV_1, LL_RCC_PLL_MUL_16);
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE_DIV_1, LL_RCC_PLL_MUL_9);
   LL_RCC_PLL_Enable();
 
    /* Wait till PLL is ready */
@@ -147,8 +146,8 @@ void SystemClock_Config(void)
 
   }
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
-  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_4);
-  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_2);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
+  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
 
    /* Wait till System clock is ready */
@@ -156,9 +155,8 @@ void SystemClock_Config(void)
   {
 
   }
-  LL_Init1msTick(128000000);
-  LL_SetSystemCoreClock(128000000);
-  LL_SYSTICK_EnableIT();
+  LL_Init1msTick(72000000);
+  LL_SetSystemCoreClock(72000000);
 }
 
 /* USER CODE BEGIN 4 */
