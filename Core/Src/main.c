@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "app.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,7 +65,7 @@ void SystemClock_Config(void);
   * @brief  The application entry point.
   * @retval int
   */
-int main(void)
+void LL_init(void)
 {
 
   /* USER CODE BEGIN 1 */
@@ -106,17 +106,17 @@ int main(void)
   MX_SPI1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  app_lunch();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
+  // while (1)
+  // {
+  //   /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-  }
+  //   /* USER CODE BEGIN 3 */
+  // }
   /* USER CODE END 3 */
 }
 
@@ -157,6 +157,7 @@ void SystemClock_Config(void)
   }
   LL_Init1msTick(72000000);
   LL_SetSystemCoreClock(72000000);
+  LL_SYSTICK_EnableIT();
 }
 
 /* USER CODE BEGIN 4 */

@@ -23,7 +23,7 @@ int entry(void)
     rt_system_signal_init();
 #endif /* RT_USING_SIGNALS */
 
-    rt_thread_t t = rt_thread_create("init", main_thread_entry, RT_NULL, 2048, 2, 10);
+    rt_thread_t t = rt_thread_create("init", main_thread_entry, RT_NULL, 1024, 2, 10);
     rt_thread_startup(t);
 
     /* timer thread initialization */
