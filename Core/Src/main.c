@@ -21,6 +21,7 @@
 #include "dma.h"
 #include "i2c.h"
 #include "spi.h"
+#include "stm32f1xx_ll_cortex.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -157,6 +158,7 @@ void SystemClock_Config(void)
   }
   LL_Init1msTick(128000000);
   LL_SetSystemCoreClock(128000000);
+  LL_SYSTICK_EnableIT();
 }
 
 /* USER CODE BEGIN 4 */

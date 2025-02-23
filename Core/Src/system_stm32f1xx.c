@@ -184,6 +184,12 @@ void SystemInit (void)
 #if defined(USER_VECT_TAB_ADDRESS)
   SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
 #endif /* USER_VECT_TAB_ADDRESS */
+
+    extern void *rt_heap_begin_get(void);
+    extern void *rt_heap_end_get(void);
+    extern void rt_system_heap_init(void *begin_addr, void *end_addr);
+    rt_system_heap_init(rt_heap_begin_get(), rt_heap_end_get());
+
 }
 
 /**

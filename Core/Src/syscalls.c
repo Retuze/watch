@@ -29,7 +29,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/times.h>
-
+#include "rtthread.h"
 
 /* Variables */
 extern int __io_putchar(int ch) __attribute__((weak));
@@ -41,7 +41,7 @@ char **environ = __env;
 
 
 /* Functions */
-void initialise_monitor_handles()
+void initialise_monitor_handles(void)
 {
 }
 
@@ -173,4 +173,26 @@ int _execve(char *name, char **argv, char **env)
   (void)env;
   errno = ENOMEM;
   return -1;
+}
+
+void sleep(uint32_t ms)
+{
+    rt_thread_mdelay(ms);
+}
+
+void usleep(uint32_t us)
+{
+    rt_thread_mdelay(us / 1000);
+}
+
+// 实现 _gettimeofday_r 函数
+int _gettimeofday_r(struct _reent *r, struct timeval *tv, void *tz) {
+    (void)r;
+    (void)tz;
+    if (tv != NULL) {
+        rt_tick_t tick = rt_tick_get(); // 获取系统节拍数
+        tv->tv_sec = tick / RT_TICK_PER_SECOND; // 转换为秒
+        tv->tv_usec = (tick % RT_TICK_PER_SECOND) * (1000000 / RT_TICK_PER_SECOND); // 转换为微秒
+    }
+    return 0;
 }
